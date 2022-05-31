@@ -78,6 +78,23 @@ services:
       - 8996:8112
       - 6881:6881
       - 6881:6881/udp
+    restart: unless-stopped
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./transmission/config:/config
+      - ./transmission/downloads:/downloads
+      - ./transmission/watch:/watch
+    ports:
+      - 8993:9091
+      - 51413:51413
+      - 51413:51413/udp
     restart: unless-stopped  
 
   bazarr:
