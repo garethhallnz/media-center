@@ -12,8 +12,8 @@ services:
       - TZ=${TZ}
       - AUTO_UPDATE=true
     volumes:
-      - ./jackett/config:/config
-      - ./jackett/downloads:/downloads
+      - ./config/jackett:/config
+      - ${ROOT}/downloads:/downloads
     ports:
       - 8990:9117
     restart: unless-stopped
@@ -26,9 +26,9 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ./sonarr/config:/config
-      - ./sonarr/tv:/tv #optional
-      - ./transmission/downloads/movies:/downloads #optional
+      - ./config/sonarr:/config
+      - ${ROOT}/downloads:/downloads
+      - ${ROOT}/complete/tv:/tv
     ports:
       - 8991:8989
     restart: unless-stopped  
@@ -41,9 +41,9 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ./radarr/config:/config
-      - ./radarr/movies:/movies #optional
-      - ./transmission/downloads/movies:/downloads #optional
+      - ./config/radarr:/config
+      - ${ROOT}/complete/movies:/movies
+      - ${ROOT}/downloads:/downloads
     ports:
       - 8992:7878
     restart: unless-stopped
@@ -58,9 +58,8 @@ services:
       - VERSION=docker
       - PLEX_CLAIM= #optional
     volumes:
-      - ./plex/config:/config
-      - ./sonarr/tv:/tv
-      - ./radarr/movies:/movies
+      - ./config/plex:/config
+      - ${ROOT}/complete:/data
     restart: unless-stopped
 
   deluge:
@@ -72,8 +71,10 @@ services:
       - TZ=${TZ}
       - DELUGE_LOGLEVEL=error #optional
     volumes:
-      - ./deluge/config:/config
-      - ./deluge/downloads:/downloads
+      - ./config/deluge:/config
+      - ${ROOT}/downloads:/downloads
+      - ${ROOT}/complete/movies:/movies
+      - ${ROOT}/complete/tv:/tv
     ports:
       - 8996:8112
       - 6881:6881
@@ -88,9 +89,11 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ./transmission/config:/config
-      - ./transmission/downloads:/downloads
-      - ./transmission/watch:/watch
+      - ./config/transmission:/config
+      - ${ROOT}/downloads:/downloads
+      - ${ROOT}/downloads/watch:/watch
+      - ${ROOT}/complete/movies:/movies
+      - ${ROOT}/complete/tv:/tv
     ports:
       - 8993:9091
       - 51413:51413
@@ -105,7 +108,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ./bazarr/config:/config
+      - ./config/bazarr:/config
       - ./bazarr/movies:/movies #optional
       - ./bazarr/tv:/tv #optional
     ports:
@@ -122,7 +125,7 @@ services:
       - NZBGET_USER=${NZBGET_USER} #optional
       - NZBGET_PASS=${NZBGET_PASS} #optional
     volumes:
-      - ./nzbget/config:/config
+      - ./config/nzbget:/config
       - ./nzbget/downloads:/downloads #optional
     ports:
       - 8995:6789
