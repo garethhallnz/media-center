@@ -15,7 +15,7 @@ services:
       - ./config/jackett:/config
       - ${ROOT}/downloads:/downloads
     ports:
-      - 8990:9117
+      - ${JACKETT_PORT}:9117
     restart: unless-stopped
 
   sonarr:
@@ -30,7 +30,7 @@ services:
       - ${ROOT}/downloads:/downloads
       - ${ROOT}/complete/tv:/tv
     ports:
-      - 8991:8989
+      - ${SONARR_PORT}:8989
     restart: unless-stopped  
 
   radarr:
@@ -45,7 +45,7 @@ services:
       - ${ROOT}/complete/movies:/movies
       - ${ROOT}/downloads:/downloads
     ports:
-      - 8992:7878
+      - ${RADARR_PORT}:7878
     restart: unless-stopped
 
   plex:
@@ -76,7 +76,7 @@ services:
       - ${ROOT}/complete/movies:/movies
       - ${ROOT}/complete/tv:/tv
     ports:
-      - 8993:9091
+      - ${TRANSMISSION_PORT}:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped  
@@ -93,7 +93,7 @@ services:
       - ./bazarr/movies:/movies #optional
       - ./bazarr/tv:/tv #optional
     ports:
-      - 8994:6767
+      - ${BAZARR_PORT}:6767
     restart: unless-stopped
 
   nzbget:
@@ -109,7 +109,7 @@ services:
       - ./config/nzbget:/config
       - ./nzbget/downloads:/downloads #optional
     ports:
-      - 8995:6789
+      - ${NZBGET_PORT}:6789
     restart: unless-stopped  
 
 networks:
