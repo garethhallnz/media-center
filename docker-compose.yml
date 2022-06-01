@@ -62,25 +62,6 @@ services:
       - ${ROOT}/complete:/data
     restart: unless-stopped
 
-  deluge:
-    image: lscr.io/linuxserver/deluge:latest
-    container_name: deluge
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - DELUGE_LOGLEVEL=error #optional
-    volumes:
-      - ./config/deluge:/config
-      - ${ROOT}/downloads:/downloads
-      - ${ROOT}/complete/movies:/movies
-      - ${ROOT}/complete/tv:/tv
-    ports:
-      - 8996:8112
-      - 6881:6881
-      - 6881:6881/udp
-    restart: unless-stopped
-
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
