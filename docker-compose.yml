@@ -28,7 +28,7 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ${ROOT}/downloads:/downloads
-      - ${ROOT}/complete/tv:/tv
+      - ${ROOT}/${DISK1}/tv:/tv
     ports:
       - ${SONARR_PORT}:8989
     restart: unless-stopped  
@@ -42,8 +42,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/radarr:/config
-      - ${ROOT}/complete/movies:/movies
       - ${ROOT}/downloads:/downloads
+      - ${ROOT}/${DISK1}/movies:/movies
     ports:
       - ${RADARR_PORT}:7878
     restart: unless-stopped
@@ -59,7 +59,8 @@ services:
       - PLEX_CLAIM= #optional
     volumes:
       - ./config/plex:/config
-      - ${ROOT}/complete:/data
+      - ${ROOT}/${DISK1}/tv:/tv
+      - ${ROOT}/${DISK1}/movies:/movies
     restart: unless-stopped
 
   transmission:
@@ -73,8 +74,8 @@ services:
       - ./config/transmission:/config
       - ${ROOT}/downloads:/downloads
       - ${ROOT}/downloads/watch:/watch
-      - ${ROOT}/complete/movies:/movies
-      - ${ROOT}/complete/tv:/tv
+      - ${ROOT}/${DISK1}/tv:/tv
+      - ${ROOT}/${DISK1}/movies:/movies
     ports:
       - ${TRANSMISSION_PORT}:9091
       - 51413:51413
