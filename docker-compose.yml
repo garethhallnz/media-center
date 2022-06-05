@@ -97,22 +97,6 @@ services:
       - ${BAZARR_PORT}:6767
     restart: unless-stopped
 
-  nzbget:
-    image: lscr.io/linuxserver/nzbget:latest
-    container_name: nzbget
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - NZBGET_USER=${NZBGET_USER} #optional
-      - NZBGET_PASS=${NZBGET_PASS} #optional
-    volumes:
-      - ./config/nzbget:/config
-      - ./nzbget/downloads:/downloads #optional
-    ports:
-      - ${NZBGET_PORT}:6789
-    restart: unless-stopped  
-
 networks:
   media-center-network:
     external: true    
