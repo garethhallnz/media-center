@@ -172,3 +172,47 @@ Head back over Bazarr and check the "Use Sonarr" box and some settings will pop 
 
 
 The next step is connecting to Radarr and the process should be identical. The only difference is that you'll have to grab your Radarr API key instead of Sonarr. Once that's done click Finish and you will be brought to your main screen where you will be greeted with a message saying that you need to restart. Click this and Bazarr should reload. Once that's all set, you should be good to go! Bazarr should now automatically downlaod subtitles for the content you add through Radarr and Sonarr that is not already found within the media files themselves.
+
+
+# *NOTES
+One issue that might creep up is that docker will reserve the HDD mount before the OS mounts it. This is even true if you have specified the HDD to auto mount. Say your hd is called `hd1` and it's internal; that means it will be mounted at `/media/$USER/hd1` what happens is docker starts and mount attemps to mount `/media/$USER/hd1` (as specified in the .env file). Since the OS still has not mounted the HDD docker reserves the name and the OS mounts in as `/media/$USER/hd11` therefore the mount in docker is now incorrect.
+
+To fix this is it's recommended to mount the HDD using fstab.
+
+1. **Create a directory to mount your HDD to**
+```bash
+sudo mkdir /hd1
+```
+
+2. **Find you disk**
+```bash
+sudo fdisk -l
+```
+*You should see some like*
+```
+Disk /dev/sdb: 2.73 TiB, 3000592982016 bytes, 5860533168 sectors
+Disk model: WDC WD30EFRX-68E
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: gpt
+Disk identifier: AD7443B6-2372-4D65-8451-875DC4AD9B25
+
+Device     Start        End    Sectors  Size Type
+/dev/sdb1   2048 5860532223 5860530176  2.7T Linux filesystem
+```
+Take note of the "Device" FYI you can also get this detail out of the "Disks" UI app.
+
+3. **Add the device to fstab**
+```bash
+sudo vim /ets/fstab # can also use nano or vi
+```
+*And add following to the end of the file:*
+```
+/dev/sdb1    /hdd    ext4    defaults    0    0
+```
+
+4. *Mount the HDD*
+```bash
+sudo mount /hd1
+```
