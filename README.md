@@ -15,10 +15,7 @@ When the download is over the file to the appropriate location
 
 ## Search for releases automatically with Usenet and torrent indexers
 
-Sonarr and Radarr can both rely on two different ways to download files:
-
-- Torrents.
-- Usenet
+Sonarr and Radarr can both download files from Torrents
 
 
 Files are searched automatically by Sonarr/Radarr through a list of _indexers_ that you have to configure. Indexers are APIs that allow searching for particular releases organized by categories. Think browsing the Pirate Bay programmatically. This is a pretty common feature for newsgroups indexers that respect a common API (called `Newznab`).
@@ -26,12 +23,11 @@ However this common protocol does not really exist for torrent indexers. That's 
 
 The best release matching your criteria is selected by Sonarr/Radarr (eg. non-blacklisted 1080p release with enough seeds). Then the download is passed on to another set of tools.
 
-## Handle bittorrent and usenet downloads with Tranmission and NZBGet
+## Handle bittorrent downloads with Tranmission
 
-Sonarr and Radarr are plugged to downloaders for our 2 different systems:
+Sonarr and Radarr are plugged to downloaders for:
 
 - [Tanmission](https://transmissionbt.com) handles torrent download.
-- [NZBGet](https://nzbget.net/) handles Usenet (newsgroups) binary downloads.
 
 Both are daemons coming with a nice Web UI, making them perfect candidates for being installed on a server. Sonarr & Radarr already have integration with them, meaning they rely on each service API to pass on downloads, request download status and handle finished downloads.
 
@@ -56,7 +52,6 @@ The server has transcoding abilities: it automatically transcodes video quality 
 **Downloaders**:
 
 - [Tranmission](https://transmissionbt.com): torrent downloader with a web UI
-- [NZBGet](https://nzbget.net): usenet downloader with a web UI
 - [Jackett](https://github.com/Jackett/Jackett): API to search torrents from multiple indexers
 - [Bazarr](https://www.bazarr.media/): A companion tool for Radarr and Sonarr which will automatically pull subtitles for all of your TV and movie downloads.
 
