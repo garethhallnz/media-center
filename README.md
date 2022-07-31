@@ -27,7 +27,7 @@ The best release matching your criteria is selected by Sonarr/Radarr (eg. non-bl
 
 Sonarr and Radarr are plugged to downloaders for:
 
-- [Tanmission](https://transmissionbt.com) handles torrent download.
+- [Transnmission](https://transmissionbt.com) handles torrent download.
 
 Both are daemons coming with a nice Web UI, making them perfect candidates for being installed on a server. Sonarr & Radarr already have integration with them, meaning they rely on each service API to pass on downloads, request download status and handle finished downloads.
 
@@ -53,7 +53,6 @@ The server has transcoding abilities: it automatically transcodes video quality 
 
 - [Tranmission](https://transmissionbt.com): torrent downloader with a web UI
 - [Jackett](https://github.com/Jackett/Jackett): API to search torrents from multiple indexers
-- [Bazarr](https://www.bazarr.media/): A companion tool for Radarr and Sonarr which will automatically pull subtitles for all of your TV and movie downloads.
 
 **Download orchestration**:
 
@@ -155,24 +154,10 @@ Radarr web UI is available on port 7878 [localhost:7878](http:localhost:7878)
 Radarr is a fork of Sonarr, made for movies instead of TV shows. So setup just like Sonarr
 
 
-### Access/Setup Bazarr
-Bazarr web UI is available on port 6767 [localhost:6767](http:localhost:6767)
-
-Load Bazarr and you will be greeted with this setup page:
-
-Click next and we will be on the Sonarr setup page. For this part we will need our Sonarr API key. To get this, open up sonarr in a separate tab and navigate to `Settings > General > Security` and copy the api key listed there.
-
-
-Head back over Bazarr and check the "Use Sonarr" box and some settings will pop up. Paste your API key in the proper field, and you can leave the other options default. If you would like, you can tick the box for "Download Only Monitored" which will prevent Bazarr from downloading subtitles for tv shows you have in your Sonarr library but have possibly deleted from your drive. Then click "Test" and Sonarr should be all set!
-
-
-The next step is connecting to Radarr and the process should be identical. The only difference is that you'll have to grab your Radarr API key instead of Sonarr. Once that's done click Finish and you will be brought to your main screen where you will be greeted with a message saying that you need to restart. Click this and Bazarr should reload. Once that's all set, you should be good to go! Bazarr should now automatically downlaod subtitles for the content you add through Radarr and Sonarr that is not already found within the media files themselves.
-
-
 # *NOTES
+### To fix this is it's recommended to mount the HDD using fstab.
 One issue that might creep up is that docker will reserve the HDD mount before the OS mounts it. This is even true if you have specified the HDD to auto mount. Say your hd is called `hd1` and it's internal; that means it will be mounted at `/media/$USER/hd1` what happens is docker starts and mount attemps to mount `/media/$USER/hd1` (as specified in the .env file). Since the OS still has not mounted the HDD docker reserves the name and the OS mounts in as `/media/$USER/hd11` therefore the mount in docker is now incorrect.
 
-To fix this is it's recommended to mount the HDD using fstab.
 
 1. **Create a directory to mount your HDD to**
 ```bash
@@ -204,10 +189,28 @@ sudo vim /ets/fstab # can also use nano or vi
 ```
 *And add following to the end of the file:*
 ```
-/dev/sdb1    /hdd    ext4    defaults    0    0
+/dev/sdb1    /hd1    ext4    defaults    0    0
 ```
 
-4. *Mount the HDD*
+4. **Mount the HDD**
 ```bash
 sudo mount /hd1
 ```
+
+### Sonarr sync list is too slow with trakt.tv
+1. **Find your sornarr apikey and copy it**
+Go to sonarr > setting  > general
+Look in the Security section
+
+2. **Setup a cron job to run every 10 min**
+```bash
+crontab -e
+```
+Then add to following ar the bottom of the file (replacing the API-KEY)
+```
+*/10 * * * * curl -XPOST -H "Content-type: application/json" -d '{"name": "ImportListSync"}' 'http://localhost:8989/api/v3/command?apikey=API-KEY' > /dev/null 2>&1
+```
+
+### Setup Plex Scrobbler
+[Setup Plex Scrobbler](https://blog.trakt.tv/plex-scrobbler-52db9b016ead)
+
