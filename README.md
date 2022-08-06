@@ -1,4 +1,4 @@
-# Overview of Docker bases media center
+# Overview of Docker based media center
 
 Sonarr / Radarr / Bazarr / Jackett / NZBGet / Transmission / Plex
 
