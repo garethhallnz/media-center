@@ -1,6 +1,6 @@
 # Overview of Docker based media center
 
-Sonarr / Radarr / Bazarr / Jackett / NZBGet / Transmission / Plex
+Sonarr / Radarr / Bazarr / Jackett / Transmission / Plex
 
 
 
@@ -103,7 +103,9 @@ TZ=Pacific/Auckland
 PUID=1000
 PGID=1000
 # The directory where data and configuration will be stored.
-ROOT=/media/my_user/storage/
+PATH_TV=/hd3/tv
+PATH_MOVIES=/hd1/movies
+PATH_DOWNLOADS=/downloads
 ```
 
 Things to notice:
@@ -121,9 +123,6 @@ Tranmission web UI is available on port 9091 [localhost:9091](http:localhost:909
 ### Access Jackett
 Jackett web UI is available on port 9117 [localhost:9117](http:localhost:9117)
 
-### Access NZBGet
-NZBGet web UI is available on port 6789 [localhost:6789](http:localhost:6789)
-
 ### Access Plex
 Plex web UI should be available at [localhost:32400/web](http:localhost:32400/web)
 
@@ -139,7 +138,7 @@ For torrents indexers, I activate Torznab custom indexers that point to my local
 
 Get torrent indexers Jackett proxy URLs by clicking `Copy Torznab Feed` in Jackett Web UI. Use the global Jackett API key as authentication.
 
-`Download Clients` tab is where we'll configure links with our two download clients: Transmission and/or NZBGet.
+`Download Clients` tab is where we'll configure links with our two download clients i.e. Transmission or other.
 
 Enable `Advanced Settings`, and tick `Remove` in the Completed Download Handling section. This tells Sonarr to remove torrents from tranmission once processed.
 
@@ -154,9 +153,11 @@ Radarr web UI is available on port 7878 [localhost:7878](http:localhost:7878)
 Radarr is a fork of Sonarr, made for movies instead of TV shows. So setup just like Sonarr
 
 
-# *NOTES
-### To fix this is it's recommended to mount the HDD using fstab.
-One issue that might creep up is that docker will reserve the HDD mount before the OS mounts it. This is even true if you have specified the HDD to auto mount. Say your hd is called `hd1` and it's internal; that means it will be mounted at `/media/$USER/hd1` what happens is docker starts and mount attemps to mount `/media/$USER/hd1` (as specified in the .env file). Since the OS still has not mounted the HDD docker reserves the name and the OS mounts in as `/media/$USER/hd11` therefore the mount in docker is now incorrect.
+#
+# NOTES
+### One issue that might creep up is that docker will reserve the HDD mount before the OS mounts it. This is even true if you have specified the HDD to auto mount. 
+To fix this is it's recommended to mount the HDD using fstab.
+Say your hd is called `hd1` and it's internal; that means it will be mounted at `/media/$USER/hd1` what happens is docker starts and mount attemps to mount `/media/$USER/hd1` (as specified in the .env file). Since the OS still has not mounted the HDD docker reserves the name and the OS mounts in as `/media/$USER/hd11` therefore the mount in docker is now incorrect.
 
 
 1. **Create a directory to mount your HDD to**
@@ -213,4 +214,3 @@ Then add to following ar the bottom of the file (replacing the API-KEY)
 
 ### Setup Plex Scrobbler
 [Setup Plex Scrobbler](https://blog.trakt.tv/plex-scrobbler-52db9b016ead)
-

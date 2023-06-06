@@ -13,7 +13,7 @@ services:
       - AUTO_UPDATE=true
     volumes:
       - ./config/jackett:/config
-      - ${ROOT}/downloads:/downloads
+      - ${PATH_DOWNLOADS}:/downloads
     ports:
       - ${JACKETT_PORT}:9117
     restart: unless-stopped
@@ -27,8 +27,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/sonarr:/config
-      - ${ROOT}/downloads:/downloads
-      - ${ROOT}/${DISK1}/tv:/tv
+      - ${PATH_DOWNLOADS}:/downloads
+      - ${PATH_TV}:/tv
     ports:
       - ${SONARR_PORT}:8989
     restart: unless-stopped  
@@ -42,8 +42,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/radarr:/config
-      - ${ROOT}/downloads:/downloads
-      - ${ROOT}/${DISK1}/movies:/movies
+      - ${PATH_DOWNLOADS}:/downloads
+      - ${PATH_MOVIES}:/movies
     ports:
       - ${RADARR_PORT}:7878
     restart: unless-stopped
@@ -56,15 +56,15 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - VERSION=docker
-      - PLEX_CLAIM= #optional
+      - PLEX_CLAIM=
     volumes:
       - ./config/plex:/config
-      - ${ROOT}/${DISK1}/tv:/tv
-      - ${ROOT}/${DISK1}/movies:/movies
+      - ${PATH_TV}:/tv
+      - ${PATH_MOVIES}:/movies
     restart: unless-stopped
 
   transmission:
-    image: lscr.io/linuxserver/transmission:latest
+    image: lscr.io/linuxserver/transmission:version-3.00-r8
     container_name: transmission
     environment:
       - PUID=${PUID}
@@ -72,15 +72,15 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/transmission:/config
-      - ${ROOT}/downloads:/downloads
-      - ${ROOT}/downloads/watch:/watch
-      - ${ROOT}/${DISK1}/tv:/tv
-      - ${ROOT}/${DISK1}/movies:/movies
+      - ${PATH_DOWNLOADS}:/downloads
+      - ${PATH_DOWNLOADS}/watch:/watch
+      - ${PATH_TV}:/tv
+      - ${PATH_MOVIES}:/movies
     ports:
       - ${TRANSMISSION_PORT}:9091
       - 51413:51413
       - 51413:51413/udp
-    restart: unless-stopped  
+    restart: unless-stopped
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
@@ -91,12 +91,12 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/bazarr:/config
-      - ${ROOT}/${DISK1}/movies:/movies
-      - ${ROOT}/${DISK1}/tv:/tv
+      - ${PATH_MOVIES}:/movies
+      - ${PATH_TV}:/tv
     ports:
       - ${BAZARR_PORT}:6767
     restart: unless-stopped
 
 networks:
   media-center-network:
-    external: true    
+    external: true
