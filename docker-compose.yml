@@ -3,20 +3,19 @@ version: '2.3'
 
 services:
 
-  jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
+  prowlarr:
+    container_name: prowlarr
+    image: ghcr.io/hotio/prowlarr
+    ports:
+      - ${PROLARR_PORT}:9696
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - AUTO_UPDATE=true
+      - UMASK=002
     volumes:
-      - ./config/jackett:/config
-      - ${PATH_DOWNLOADS}:/downloads
-    ports:
-      - ${JACKETT_PORT}:9117
-    restart: unless-stopped
+      - ./config/prowlarr:/config
+    restart: unless-stopped  
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -64,7 +63,7 @@ services:
     restart: unless-stopped
 
   transmission:
-    image: lscr.io/linuxserver/transmission:version-3.00-r8
+    image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
     environment:
       - PUID=${PUID}
@@ -82,19 +81,63 @@ services:
       - 51413:51413/udp
     restart: unless-stopped
 
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
+  overseerr:
+    container_name: overseerr
+    image: ghcr.io/hotio/overseerr
+    ports:
+      - ${OVERSEERR_PORT}:5055
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - UMASK=002
       - TZ=${TZ}
     volumes:
-      - ./config/bazarr:/config
-      - ${PATH_MOVIES}:/movies
-      - ${PATH_TV}:/tv
+      - ./config/overseerr:/config
+    restart: unless-stopped  
+  
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    volumes:
+      - ./config/homarr/configs:/app/data/configs
+      - ./config/homarr/data:/data
+      - ./config/homarr/icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - ${BAZARR_PORT}:6767
+      - ${HOMARR_PORT}:7575
+    restart: unless-stopped  
+
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:nightly
+    container_name: mealie
+    ports:
+        - ${MEALIE_PORT}:9000 
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    volumes:
+      - ./config/mealie/data:/app/data/
+    environment:
+      - ALLOW_SIGNUP=true
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=002
+      - TZ=${TZ}
+      - MAX_WORKERS=2
+      - WEB_CONCURRENCY=10
+      - BASE_URL=http://192.168.20.100:9925
+    restart: unless-stopped
+
+  twingate:
+    image: twingate/connector:1
+    container_name: ${TWINGATE_CONTAINER_NAME}
+    environment:
+      - TWINGATE_NETWORK=${TWINGATE_NETWORK}
+      - TWINGATE_REFRESH_TOKEN=${TWINGATE_REFRESH_TOKEN}
+      - TWINGATE_LABEL_HOSTNAME=hostname
+    sysctls:
+      net.ipv4.ping_group_range: "0 2147483647"
     restart: unless-stopped
 
 networks:
